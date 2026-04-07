@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de edição de alunos</title>
+</head>
+
+<body>
+    <form method="POST" action="/atualizar/{{ aluno.id }}">
+        Nome:
+        <input type="text" name="nome" value="{{ aluno.nome }}" required>
+
+        Idade:
+        <input type="number" name="idade" value="{{ aluno.idade }}" required>
+
+        <button type="submit">Atualizar</button>
+</body>
+
+</html>
