@@ -1,0 +1,176 @@
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% PACOTES
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\shorthandoff{"}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{newtxtext,newtxmath}
+\usepackage[most]{tcolorbox}
+\usepackage{float}
+
+\geometry{
+    top=2.5cm,
+    bottom=3cm,
+    left=1.5cm,
+    right=1.5cm
+}
+
+\onehalfspacing
+
+% =====================================================
+% CORES PERSONALIZADAS
+% =====================================================
+\definecolor{azulTitulo}{RGB}{30,60,90}
+\definecolor{azulObjetivos}{RGB}{30,60,90}
+\definecolor{cinzaCodigo}{RGB}{245,245,245}
+\definecolor{vermelhoCodigo}{RGB}{180,50,50}
+\definecolor{mostarda}{RGB}{204,153,0}
+
+% =====================================================
+% BOXES
+% =====================================================
+\newtcolorbox{boxAtividade}[1][]{
+    breakable,
+    enhanced,
+    colback=azulTitulo!5,
+    colframe=azulTitulo,
+    boxrule=0pt,
+    arc=6pt,
+    outer arc=6pt,
+    boxsep=0pt,
+    left=14pt,
+    right=14pt,
+    top=16pt,
+    bottom=14pt,
+    title=#1,
+    coltitle=white,
+    colbacktitle=azulTitulo,
+    fonttitle=\bfseries,
+    attach boxed title to top left={
+        yshift=-3mm,
+        xshift=6mm
+    },
+    boxed title style={
+        sharp corners,
+        boxrule=0pt
+    }
+}
+
+\newtcolorbox{boxCodigo}{
+    colback=cinzaCodigo,
+    colframe=vermelhoCodigo,
+    boxrule=0.8pt,
+    arc=2pt,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=6pt,
+    borderline={0.5pt}{0pt}{vermelhoCodigo,dashed}
+}
+
+% =====================================================
+% CABEÇALHO E RODAPÉ
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{
+    % Tenta carregar a logo se o caminho estiver correto, senão ignora
+    \IfFileExists{../../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}{
+        \includegraphics[height=1.4cm]{../../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}
+    }{IFSC - Garopaba}
+}
+\fancyhead[R]{
+    \textbf{Manual do Professor}\\
+    UC – Tópicos Avançados em Informática\\
+    Técnico Integrado em Informática
+}
+\fancyfoot[L]{\small\textit{Manual de Conectividade - Roteiro 06}}
+\fancyfoot[R]{\small Página \thepage}
+\renewcommand{\footrulewidth}{2.4pt}
+\setlength{\headheight}{45pt}
+
+% =====================================================
+% ESTILO DE SEÇÃO
+% =====================================================
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{azulTitulo}}
+{\thesection}
+{1em}
+{}
+[\vspace{0.3cm}\hrule]
+
+\begin{document}
+
+\section*{Manual do Professor: Conectividade e Monitoramento}
+
+Este guia serve como referência rápida para configurar o ambiente do \textbf{Porto Central} antes do início das aulas, garantindo o acesso dos alunos e a supervisão do tráfego.
+
+\begin{boxAtividade}[1. Pré-requisitos (Configuração NAT no VirtualBox)]
+Para que o servidor Linux (VM) seja acessível pelo Mac (Host), certifique-se de que a VM está em modo \textbf{NAT} com as seguintes regras de \textbf{Redirecionamento de Portas} (Port Forwarding):
+
+\vspace{0.3cm}
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+\rowcolor{azulTitulo!20} \textbf{Nome} & \textbf{Prot.} & \textbf{Porta Hosp.} & \textbf{Porta Conv.} \\ \hline
+ssh & TCP & 2222 & 22 \\ \hline
+vscode & TCP & 8080 & 8080 \\ \hline
+\end{tabular}
+\end{boxAtividade}
+
+\section*{2. Passo a Passo de Inicialização}
+
+Siga esta sequência exata no terminal do seu Mac:
+
+\subsection*{Passo A: Estabelecer Conexão SSH e Túnel de Monitoramento}
+Abra o terminal do Mac e conecte-se à VM puxando o painel do Ngrok para a sua máquina local:
+
+\begin{boxCodigo}
+\begin{verbatim}
+ssh -L 4040:127.0.0.1:4040 ifsc@127.0.0.1 -p 2222
+\end{verbatim}
+\end{boxCodigo}
+
+\subsection*{Passo B: Iniciar o Túnel Público (Ngrok)}
+Dentro do terminal SSH (já logado na VM), inicie o túnel usando o seu domínio estático reservado:
+
+\begin{boxCodigo}
+\begin{verbatim}
+ngrok http --domain=wobbly-subscript-onshore.ngrok-free.dev 8080
+\end{verbatim}
+\end{boxCodigo}
+
+\section*{3. Como Supervisionar a Aula}
+
+\begin{itemize}
+    \item \textbf{Acesso dos Alunos:} Os alunos devem acessar a URL fixa via navegador:\\
+    👉 \texttt{https://wobbly-subscript-onshore.ngrok-free.dev}
+    
+    \item \textbf{Monitoramento (Traffic Inspection):} Para ver em tempo real quais arquivos os alunos estão acessando, abra no navegador do seu Mac:\\
+    👉 \texttt{http://localhost:4040}
+\end{itemize}
+
+\begin{tcolorbox}[colback=mostarda!10, colframe=mostarda, title=Dica de Ouro]
+No painel do Ngrok (porta 4040), você consegue ver o histórico de todas as requisições HTTP. Se um aluno estiver com erro no código, você verá a requisição falhando (status 404 ou 500) ali na hora!
+\end{tcolorbox}
+
+\section*{4. Troubleshooting Rápido}
+
+\begin{itemize}
+    \item \textbf{SSH falhou:} Verifique se a VM está ligada e se a porta 2222 está configurada no VirtualBox.
+    \item \textbf{Ngrok não inicia:} Verifique se o token de autenticação foi adicionado.
+    \item \textbf{Página não carrega:} Verifique se o serviço do VS Code está rodando na VM (\texttt{sudo systemctl status code-server@ifsc}).
+\end{itemize}
+
+\end{document}

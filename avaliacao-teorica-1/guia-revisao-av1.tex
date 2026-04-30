@@ -1,0 +1,175 @@
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% PACOTES
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\shorthandoff{"}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{newtxtext,newtxmath}
+\usepackage[most]{tcolorbox}
+\usepackage{float}
+
+\geometry{
+    top=2.5cm,
+    bottom=3cm,
+    left=1.5cm,
+    right=1.5cm
+}
+
+\onehalfspacing
+
+% =====================================================
+% CORES PERSONALIZADAS
+% =====================================================
+\definecolor{azulTitulo}{RGB}{30,60,90}
+\definecolor{azulObjetivos}{RGB}{30,60,90}
+\definecolor{cinzaCodigo}{RGB}{245,245,245}
+\definecolor{vermelhoCodigo}{RGB}{180,50,50}
+\definecolor{mostarda}{RGB}{204,153,0}
+
+% =====================================================
+% BOXES
+% =====================================================
+\newtcolorbox{boxRevisao}[1][]{
+    breakable,
+    enhanced,
+    colback=azulTitulo!5,
+    colframe=azulTitulo,
+    boxrule=0.5pt,
+    arc=4pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt,
+    title=#1,
+    coltitle=white,
+    colbacktitle=azulTitulo,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{boxDestaque}{
+    colback=mostarda!10,
+    colframe=mostarda,
+    boxrule=1pt,
+    arc=4pt,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt
+}
+
+% =====================================================
+% CABEÇALHO E RODAPÉ
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{
+    \IfFileExists{../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}{
+        \includegraphics[height=1.4cm]{../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}
+    }{IFSC - Garopaba}
+}
+\fancyhead[R]{
+    \textbf{Guia de Revisão - AV1}\\
+    UC – Tópicos Avançados em Informática\\
+    Técnico Integrado em Informática
+}
+\fancyfoot[L]{\small\textit{Preparação para Avaliação Teórica 01}}
+\fancyfoot[R]{\small Página \thepage}
+\renewcommand{\footrulewidth}{2.4pt}
+\setlength{\headheight}{45pt}
+
+% =====================================================
+% ESTILO DE SEÇÃO
+% =====================================================
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{azulTitulo}}
+{\thesection}
+{1em}
+{}
+[\vspace{0.3cm}\hrule]
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Material de Revisão para Avaliação Teórica 01}}\\
+    \vspace{0.2cm}
+    \textit{Conteúdo: Roteiros 01 ao 07}
+\end{center}
+
+\vspace{0.5cm}
+
+\section{Versionamento de Código (Git \& GitHub)}
+
+O Git é essencial para o trabalho colaborativo e segurança do código.
+
+\begin{itemize}
+    \item \textbf{Commit:} Salva o progresso localmente com uma mensagem.
+    \item \textbf{Push/Pull:} Sincroniza o trabalho com o servidor remoto (GitHub).
+    \item \textbf{Clone:} Baixa um projeto completo pela primeira vez.
+\end{itemize}
+
+\section{Orientação a Objetos (Python)}
+
+A OO organiza o código em "objetos" que possuem dados e comportamentos.
+
+\begin{boxRevisao}[Conceitos Chave OO]
+\begin{itemize}
+    \item \textbf{Classe:} O projeto/molde (ex: \texttt{Class Pessoa}).
+    \item \textbf{Objeto:} A instância criada (ex: \texttt{joao = Pessoa()}).
+    \item \textbf{Atributos:} Variáveis dentro da classe (ex: \texttt{self.nome}).
+    \item \textbf{Métodos:} Funções dentro da classe (ex: \texttt{def falar(self)}).
+    \item \textbf{Construtor (\texttt{\_\_init\_\_}):} Define o estado inicial do objeto.
+\end{itemize}
+\end{boxRevisao}
+
+\section{Desenvolvimento Web com Flask}
+
+O Flask é um micro-framework que facilita a criação de servidores web.
+
+\begin{itemize}
+    \item \textbf{Rotas:} Endereços que o servidor reconhece (\texttt{@app.route('/')}).
+    \item \textbf{Templates:} Arquivos HTML que recebem dados do Python via Jinja2.
+    \item \textbf{GET vs POST:} GET para leitura (dados na URL); POST para envio/escrita (dados ocultos no corpo).
+    \item \textbf{render\_template:} Função que envia o HTML para o navegador.
+\end{itemize}
+
+\section{Virtualização e Docker}
+
+A grande mudança de paradigma no Roteiro 06.
+
+\begin{boxDestaque}
+\textbf{VM vs Container:} Enquanto a VM simula o hardware e um SO completo (lento), o Container isola apenas o necessário para a aplicação rodar, compartilhando o "motor" (kernel) do hospedeiro (rápido).
+\end{boxDestaque}
+
+\begin{itemize}
+    \item \textbf{Imagem:} O arquivo de instalação estático.
+    \item \textbf{Container:} O processo em execução.
+    \item \textbf{Port Mapping (\texttt{-p 80:80}):} Abre uma janela para o mundo externo acessar o container.
+    \item \textbf{Volumes (\texttt{-v}):} Permite editar o código no computador e ver a mudança no container sem reiniciá-lo.
+\end{itemize}
+
+\section{Dockerfile e Orquestração}
+
+\begin{boxRevisao}[Dockerfile: A Receita]
+\begin{itemize}
+    \item \texttt{FROM}: Qual sistema base?
+    \item \texttt{WORKDIR}: Onde o código vai morar?
+    \item \texttt{COPY}: Quais arquivos levar?
+    \item \texttt{RUN}: O que instalar?
+    \item \texttt{CMD}: Como ligar o motor?
+\end{itemize}
+\end{boxRevisao}
+
+\textbf{Docker Compose:} Permite gerenciar um "prédio" de containers (App + Banco) com um único arquivo \texttt{.yml} e o comando \texttt{docker-compose up}.
+
+\end{document}
