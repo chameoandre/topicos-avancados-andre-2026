@@ -1,0 +1,174 @@
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% PACOTES
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\shorthandoff{"}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{newtxtext,newtxmath}
+\usepackage[most]{tcolorbox}
+\usepackage{float}
+
+\geometry{
+    top=2.5cm,
+    bottom=3cm,
+    left=1.5cm,
+    right=1.5cm
+}
+
+\onehalfspacing
+
+% =====================================================
+% CORES PERSONALIZADAS
+% =====================================================
+\definecolor{azulTitulo}{RGB}{30,60,90}
+\definecolor{azulObjetivos}{RGB}{30,60,90}
+\definecolor{cinzaCodigo}{RGB}{245,245,245}
+\definecolor{vermelhoCodigo}{RGB}{180,50,50}
+\definecolor{mostarda}{RGB}{204,153,0}
+
+% =====================================================
+% BOXES
+% =====================================================
+\newtcolorbox{boxRevisao}[1][]{
+    breakable,
+    enhanced,
+    colback=azulTitulo!5,
+    colframe=azulTitulo,
+    boxrule=0.5pt,
+    arc=4pt,
+    left=10pt,
+    right=10pt,
+    top=10pt,
+    bottom=10pt,
+    title=#1,
+    coltitle=white,
+    colbacktitle=azulTitulo,
+    fonttitle=\bfseries
+}
+
+\newtcolorbox{boxDestaque}{
+    colback=mostarda!10,
+    colframe=mostarda,
+    boxrule=1pt,
+    arc=4pt,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt
+}
+
+% =====================================================
+% CABEÇALHO E RODAPÉ
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{
+    \IfFileExists{../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}{
+        \includegraphics[height=1.4cm]{../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}
+    }{IFSC - Garopaba}
+}
+\fancyhead[R]{
+    \textbf{Guia de Revisão - AV1}\\
+    UC – Tópicos Avançados em Informática\\
+    Técnico Integrado em Informática
+}
+\fancyfoot[L]{\small\textit{Preparação para Avaliação Teórica 01}}
+\fancyfoot[R]{\small Página \thepage}
+\renewcommand{\footrulewidth}{2.4pt}
+\setlength{\headheight}{45pt}
+
+% =====================================================
+% ESTILO DE SEÇÃO
+% =====================================================
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{azulTitulo}}
+{\thesection}
+{1em}
+{}
+[\vspace{0.3cm}\hrule]
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Material de Revisão para Avaliação Teórica 01}}\\
+    \vspace{0.2cm}
+    \textit{Conteúdo: Roteiros 01 ao 07}
+\end{center}
+
+\vspace{0.5cm}
+
+\section{Por que estudamos isso? (Contexto Profissional)}
+
+Nesta unidade curricular, simulamos o \textbf{Pipeline de Desenvolvimento Moderno}. No mercado de trabalho, não basta apenas "saber programar", é preciso saber como entregar software de forma profissional, escalável e colaborativa. 
+
+\begin{itemize}
+    \item \textbf{Git:} Garante a integridade do código e o trabalho em equipe.
+    \item \textbf{Flask:} Transforma lógica Python em serviços web reais.
+    \item \textbf{Docker:} Resolve o problema de infraestrutura ("na minha máquina funciona").
+\end{itemize}
+
+\section{Versionamento de Código (Git \& GitHub)}
+
+\begin{itemize}
+    \item \texttt{git status}: O comando mais importante para saber o estado dos seus arquivos.
+    \item \texttt{git add .} e \texttt{git commit -m "msg"}: O fluxo básico de registro de alterações.
+    \item \texttt{git push origin main}: Sincronização com o servidor remoto.
+    \item \texttt{git log --oneline}: Visualização rápida do histórico de versões.
+\end{itemize}
+
+\section{Orientação a Objetos (Python)}
+
+\begin{boxRevisao}[Exemplo Prático OO]
+\begin{verbatim}
+class Aluno:
+    def __init__(self, nome, nota):
+        self.nome = nome # Atributo
+        self.nota = nota # Atributo
+
+    def situacao(self): # Método
+        return "Aprovado" if self.nota >= 6 else "Recuperação"
+
+# Uso: a1 = Aluno("Ana", 8.5)
+\end{verbatim}
+\end{boxRevisao}
+
+\section{Desenvolvimento Web com Flask}
+
+\begin{itemize}
+    \item \textbf{Rotas:} Endereços que o servidor reconhece (\texttt{@app.route('/')}).
+    \item \textbf{Jinja2:} \texttt{\{\{ variavel \}\}} exibe dados; \texttt{\{\% for ... \%\}} itera sobre listas.
+    \item \textbf{GET vs POST:} Use \textbf{GET} para buscas e navegação; use \textbf{POST} para formulários de cadastro (via \texttt{request.form}).
+\end{itemize}
+
+\section{Virtualização e Docker}
+
+\begin{boxDestaque}
+\textbf{Comandos de Investigação:} Se o container subir mas o site não abrir, use \texttt{docker logs <nome>} para ver os erros do Python/Flask. Use \texttt{docker exec -it <nome> bash} para entrar no container.
+\end{boxDestaque}
+
+\begin{itemize}
+    \item \textbf{Port Mapping (\texttt{-p 8080:5000}):} Mapeia a porta do Mac (8080) para a do Flask (5000).
+    \item \textbf{Volumes (\texttt{-v \$(pwd):/app}):} Cria o túnel de edição em tempo real.
+\end{itemize}
+
+\section{Dockerfile e Orquestração}
+
+\textbf{Docker Compose:}
+\begin{itemize}
+    \item \texttt{docker-compose up -d}: Sobe todos os serviços (Web + Banco).
+    \item \texttt{docker-compose down}: Limpa todo o ambiente (remove containers e redes).
+    \item \texttt{docker-compose logs -f}: Monitora os logs de todos os containers ao mesmo tempo.
+\end{itemize}
+
+\end{document}
