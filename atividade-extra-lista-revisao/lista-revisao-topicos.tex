@@ -1,0 +1,409 @@
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% PACOTES E LAYOUT
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{newtxtext,newtxmath}
+\usepackage[most]{tcolorbox}
+\usepackage{etoolbox}
+
+% Toggle para o Gabarito (false = prova aluno, true = gabarito professor)
+\newtoggle{gabarito}
+\settoggle{gabarito}{false}
+
+\geometry{
+    top=2.5cm,
+    bottom=3cm,
+    left=1.5cm,
+    right=1.5cm
+}
+
+\onehalfspacing
+
+% =====================================================
+% CORES PERSONALIZADAS E MACROS
+% =====================================================
+\definecolor{azulTitulo}{RGB}{30,60,90}
+\definecolor{cinzaCodigo}{RGB}{245,245,245}
+\definecolor{corGabarito}{RGB}{180,50,50}
+
+\newcommand{\correto}[1]{\iftoggle{gabarito}{\textbf{\color{corGabarito}#1}}{#1}}
+\newcommand{\resp}[1]{\iftoggle{gabarito}{\textbf{\color{corGabarito}#1}}{\phantom{#1}}}
+\newcommand{\marcar}[1]{\iftoggle{gabarito}{\textbf{\color{corGabarito}X}}{}}
+\newcommand{\checkGabarito}[1]{\iftoggle{gabarito}{\hspace{0.5cm} \textbf{\color{corGabarito}--- #1}}{}}
+\newcommand{\justificativa}[1]{\iftoggle{gabarito}{\vspace{0.2cm}\textbf{\color{corGabarito}Justificativa:} \color{corGabarito}#1}{\vspace{0.8cm}}}
+
+% =====================================================
+% CABEÇALHO E RODAPÉ
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\includegraphics[height=1.8cm]{logo_ifsc.png}}
+\fancyhead[R]{
+\textbf{Técnico Integrado em Informática}\\
+\textbf{UC: Tópicos Avançados em Informática}\\
+Docente: Prof. André Moraes\\ 
+IFSC -- Campus Garopaba
+}
+\fancyfoot[L]{\small\textit{Lista de Revisão Preparatória \iftoggle{gabarito}{-- \textbf{GABARITO}}{}}}
+\fancyfoot[R]{\small Página \thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{50pt}
+
+\titleformat{\section}{\normalfont\Large\bfseries\color{azulTitulo}}{\thesection}{1em}{}[\vspace{0.3cm}\hrule]
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{LISTA DE REVISÃO GERAL (30 QUESTÕES)}}\\
+    \vspace{0.2cm}
+    Unidade Curricular: Tópicos Avançados em Informática\\
+    \iftoggle{gabarito}{\textbf{\color{corGabarito}CHAVE DE RESPOSTAS / GABARITO}}{}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=0pt]
+    \textbf{Estudante:} \hrulefill \\
+    \vspace{0.3cm}
+    \textbf{Data:} \_\_\_/\_\_\_/\_\_\_\_\_ \hspace{2cm} \textbf{Nota de Participação:} \_\_\_\_\_\_\_\_\_\_
+\end{tcolorbox}
+
+\vspace{0.5cm}
+
+\section*{Instruções Iniciais}
+Esta é uma extensa bateria de revisão contendo \textbf{30 questões} distribuídas em 6 pilares fundamentais. O objetivo é testar suas habilidades, expor lacunas de conhecimento e solidificar conceitos antes da avaliação formal. Aproveite este documento para debater com seus colegas e tirar dúvidas com o professor.
+
+\vspace{0.5cm}
+
+% ==========================================
+% SEÇÃO 1: GIT E GITHUB
+% ==========================================
+\section{Controle de Versão (Git e GitHub)}
+
+% Q1
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 1]
+    Qual é o comando primário utilizado no terminal para inicializar um repositório Git do zero em uma pasta que ainda não possui controle de versão?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{git clone}
+        \item \correto{\texttt{git init}}
+        \item \texttt{git config}
+        \item \texttt{git push}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q2
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 2]
+    O comando \texttt{git add .} tem como principal função:
+    \begin{enumerate}[label=\alph*)]
+        \item Criar um novo commit com todos os arquivos deletados.
+        \item \correto{Adicionar todas as alterações (novos arquivos, modificações e exclusões) na \textit{Staging Area}, preparando-as para o próximo commit.}
+        \item Baixar o repositório da nuvem (GitHub) para o computador local.
+        \item Configurar a conexão SSH do repositório.
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q3
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 3 (V/F)]
+    ( ) O arquivo \texttt{.gitignore} serve para listar todos os arquivos sensíveis ou irrelevantes (como pastas \texttt{node\_modules} ou \texttt{venv}) que o Git \textbf{não} deve rastrear e nem enviar para o GitHub.
+    \justificativa{Verdadeiro.}
+\end{tcolorbox}
+
+% Q4
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 4]
+    Qual o comando completo para criar um commit com a mensagem 'Primeira versão da API'?
+    \begin{enumerate}[label=\alph*)]
+        \item \correto{\texttt{git commit -m 'Primeira versão da API'}}
+        \item \texttt{git add commit 'Primeira versão da API'}
+        \item \texttt{git push -m 'Primeira versão da API'}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q5
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 5 (V/F)]
+    ( ) Se você trabalha em um projeto na escola, chega em casa e precisa baixar o que seu colega enviou para o GitHub, você obrigatoriamente precisa rodar o comando \texttt{git push}.
+    \justificativa{Falso. O comando para "puxar/baixar" atualizações do repositório remoto é o \texttt{git pull}.}
+\end{tcolorbox}
+
+\newpage
+% ==========================================
+% SEÇÃO 2: PYTHON BÁSICO
+% ==========================================
+\section{Fundamentos de Python (Lógica)}
+
+% Q6
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 6]
+    Qual estrutura de dados nativa do Python utilizamos quando precisamos armazenar elementos no formato de \textbf{Chave-Valor} (semelhante ao JSON)?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{List} (Listas)
+        \item \texttt{Tuple} (Tuplas)
+        \item \correto{\texttt{Dictionary} (Dicionários)}
+        \item \texttt{Set} (Conjuntos)
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q7
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 7]
+    No Python, a endentação (recuo do texto, normalmente usando a tecla \textit{Tab} ou 4 espaços) é opcional e serve apenas para deixar o código visualmente bonito.
+    \begin{enumerate}[label=\alph*)]
+        \item \correto{Falso, a endentação é obrigatória e define os blocos lógicos de funções e laços.}
+        \item Verdadeiro, o compilador ignora espaços em branco como faz no HTML.
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q8
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 8 (V/F)]
+    ( ) Uma função em Python é declarada utilizando a palavra reservada \texttt{function}, seguida pelo nome e parâmetros: \texttt{function calcular\_soma(a, b):}.
+    \justificativa{Falso. Em Python a palavra-chave utilizada para definir funções é \texttt{def}.}
+\end{tcolorbox}
+
+% Q9
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 9]
+    Analise a lista: \texttt{frutas = ['maçã', 'banana', 'laranja']}. Qual índice deve ser utilizado para recuperar a \textit{banana}?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{frutas[0]}
+        \item \correto{\texttt{frutas[1]}}
+        \item \texttt{frutas[2]}
+        \item \texttt{frutas['banana']}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q10
+\begin{tcolorbox}[colback=azulTitulo!5, colframe=azulTitulo, title=Questão 10]
+    O que será impresso no terminal após a execução do laço \texttt{for} abaixo?
+\begin{verbatim}
+contador = 0
+for i in range(3):
+    contador = contador + 1
+print(contador)
+\end{verbatim}
+    \begin{enumerate}[label=\alph*)]
+        \item 0
+        \item 2
+        \item \correto{3}
+    \end{enumerate}
+\end{tcolorbox}
+
+
+\newpage
+% ==========================================
+% SEÇÃO 3: PYTHON ORIENTADO A OBJETOS
+% ==========================================
+\section{Python: Orientação a Objetos (OOP)}
+
+% Q11
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 11]
+    Qual das alternativas melhor define o que é uma \textbf{Classe} no paradigma de OO?
+    \begin{enumerate}[label=\alph*)]
+        \item \correto{Um molde ou diagrama lógico que define as propriedades e comportamentos que um futuro objeto terá.}
+        \item A área da memória RAM onde um objeto já foi concretamente salvo.
+        \item Uma estrutura do banco de dados que salva dados de forma irreversível.
+        \item Uma função Python que só roda em servidores Linux.
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q12
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 12]
+    Qual é o método construtor especial de uma classe Python, executado automaticamente no instante em que instanciamos (criamos) o objeto?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{def constructor():}
+        \item \correto{\texttt{def \_\_init\_\_(self):}}
+        \item \texttt{def new\_object():}
+        \item \texttt{def self():}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q13
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 13 (V/F)]
+    ( ) Todo método interno criado dentro de uma classe precisa declarar a palavra \texttt{self} como seu primeiro parâmetro para que consiga enxergar e manipular seus próprios atributos (como \texttt{self.nome}).
+    \justificativa{Verdadeiro.}
+\end{tcolorbox}
+
+% Q14
+\begin{tcolorbox}[colback=azulTitulo!5, colframe=azulTitulo, title=Questão 14]
+    Qual a forma correta de instanciar um objeto da classe \texttt{Cachorro}?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{meu\_cachorro = Cachorro.init('Pug')}
+        \item \texttt{meu\_cachorro = new Cachorro('Pug')}
+        \item \correto{\texttt{meu\_cachorro = Cachorro('Pug')}}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q15
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 15 (V/F)]
+    ( ) A partir de uma única Classe bem definida (como \texttt{class Usuario:}), eu posso gerar e manter ao mesmo tempo centenas de objetos diferentes na memória do meu sistema.
+    \justificativa{Verdadeiro. O poder da OO é justamente a reutilização do molde.}
+\end{tcolorbox}
+
+\newpage
+% ==========================================
+% SEÇÃO 4: ROTEAMENTO FLASK
+% ==========================================
+\section{Web Frameworks (Roteamento Flask)}
+
+% Q16
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 16]
+    Qual é o \textit{decorator} utilizado no Flask para amarrar a URL de "contatos" (ex: \texttt{/contatos}) a uma função Python que processará essa rota?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{app.config['/contatos']}
+        \item \correto{\texttt{@app.route('/contatos')}}
+        \item \texttt{@flask.url('/contatos')}
+        \item \texttt{def route('/contatos'):}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q17
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 17]
+    Como fazemos o servidor Flask rodar e ficar "ouvindo" conexões em modo de testes para que não precisemos desligar o servidor manualmente a cada linha de código alterada?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{app.run(production=False)}
+        \item \texttt{app.start(auto=True)}
+        \item \correto{\texttt{app.run(debug=True)}}
+        \item \texttt{flask.reload()}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q18
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 18 (V/F)]
+    ( ) Quando um servidor web renderiza uma resposta utilizando o \texttt{render\_template('index.html')}, o motor do Flask (Jinja2) processa as variáveis inseridas no arquivo e devolve para o navegador do cliente um arquivo de HTML finalizado e pronto para ser lido na tela.
+    \justificativa{Verdadeiro.}
+\end{tcolorbox}
+
+% Q19
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 19]
+    Qual linha extrai os dados de um formulário com \texttt{name='email'} no Flask?
+    \begin{enumerate}[label=\alph*)]
+        \item \correto{\texttt{email = request.form['email']}}
+        \item \texttt{email = flask.get('email')}
+        \item \texttt{email = response.input('email')}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q20
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 20 (V/F)]
+    ( ) Se uma rota do Flask estiver configurada para processar submissões de formulário vindas do método POST, obrigatoriamente precisamos passar o parâmetro \texttt{methods=['POST']} no decorator da rota.
+    \justificativa{Verdadeiro. Se os métodos permitidos não forem declarados, a rota aceita apenas GET por padrão.}
+\end{tcolorbox}
+
+\newpage
+% ==========================================
+% SEÇÃO 5: APIs REST E HTTP
+% ==========================================
+\section{APIs e Verbos HTTP}
+
+% Q21
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 21]
+    Em uma arquitetura moderna baseada em JSON para comunicação entre um Front-End em JavaScript e um Back-End em Python, qual função do Flask pega um dicionário Python e o converte para uma string formato JSON válida para transmissão web?
+    \begin{enumerate}[label=\alph*)]
+        \item \correto{\texttt{jsonify(meu\_dicionario)}}
+        \item \texttt{render\_json(meu\_dicionario)}
+        \item \texttt{dict\_to\_web(meu\_dicionario)}
+        \item \texttt{app.response\_json()}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q22
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 22]
+    Em um sistema CRUD, qual verbo HTTP é utilizado para Alterar/Substituir um dado existente?
+    \begin{enumerate}[label=\alph*)]
+        \item GET
+        \item POST
+        \item \correto{PUT}
+        \item DELETE
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q23
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 23 (V/F)]
+    ( ) Para garantir a segurança dos dados sensíveis, como um cadastro de cartão de crédito no site, a aplicação web deve utilizar o método \texttt{GET}, pois ele esconde os dados inseridos dentro do corpo criptografado da requisição.
+    \justificativa{Falso. O \texttt{GET} envia os dados pendurados diretamente na URL, escancarados para todos. Para esconder no corpo da requisição utiliza-se o método \texttt{POST}.}
+\end{tcolorbox}
+
+% Q24
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 24]
+    O \textit{Status Code} que indica que a requisição bateu com perfeição no servidor, foi devidamente processada, e retornou sucesso na consulta de dados é o:
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{500 Internal Error}
+        \item \texttt{404 Not Found}
+        \item \correto{\texttt{200 OK}}
+        \item \texttt{201 Created}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q25
+\begin{tcolorbox}[colback=azulTitulo!5, colframe=azulTitulo, title=Questão 25]
+    O que significa o código HTTP 500 recebido em uma API?
+    \begin{enumerate}[label=\alph*)]
+        \item Sucesso absoluto na requisição.
+        \item Recurso não encontrado no servidor.
+        \item \correto{Erro interno no servidor (problema no código Backend).}
+    \end{enumerate}
+\end{tcolorbox}
+
+\newpage
+% ==========================================
+% SEÇÃO 6: INFRAESTRUTURA DOCKER
+% ==========================================
+\section{Infraestrutura Isolada (Docker)}
+
+% Q26
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 26]
+    Qual comando terminal lista \textbf{apenas os containers que estão ativamente em execução} no exato momento, excluindo os que estão pausados ou desligados?
+    \begin{enumerate}[label=\alph*)]
+        \item \texttt{docker images}
+        \item \texttt{docker list}
+        \item \correto{\texttt{docker ps}}
+        \item \texttt{docker status running}
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q27
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 27]
+    Você subiu um servidor web usando o Docker e configurou a \textit{flag} \texttt{-p 9090:80}. Isso significa que:
+    \begin{enumerate}[label=\alph*)]
+        \item \correto{Tráfegos que chegam na porta 9090 da sua máquina física serão injetados para dentro da porta 80 do container isolado.}
+        \item Tráfegos da porta 80 de fora entram na 9090 de dentro.
+        \item O servidor web só aceitará requisições depois das 09h da manhã (Timeout).
+        \item O Container rodará consumindo um máximo de 90\% do processamento.
+    \end{enumerate}
+\end{tcolorbox}
+
+% Q28
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 28 (V/F)]
+    ( ) Uma "Imagem" no Docker representa uma instância viva do software rodando memória, consumindo processador e atendendo requisições reais.
+    \justificativa{Falso. A "Imagem" é o arquivo empacotado estático. Quem assume vida, gasta memória e atende requisições ativamente é o "Container".}
+\end{tcolorbox}
+
+% Q29
+\begin{tcolorbox}[colback=white, colframe=azulTitulo, title=Questão 29 (V/F)]
+    ( ) Para injetar uma senha de Banco de Dados dentro de um container Docker no exato momento em que ele está nascendo, evitando deixá-la salva em texto puro nos arquivos, utilizamos a flag \texttt{-e POSTGRES\_PASSWORD=minha\_senha}.
+    \justificativa{Verdadeiro. A flag \texttt{-e} passa Variáveis de Ambiente (Environment Variables).}
+\end{tcolorbox}
+
+% Q30
+\begin{tcolorbox}[colback=azulTitulo!5, colframe=azulTitulo, title=Questão 30]
+    Qual a utilidade da flag de volumes \texttt{-v \$(pwd):/app}?
+    \begin{enumerate}[label=\alph*)]
+        \item Aumentar a velocidade do processador do container.
+        \item \correto{Sincronizar a pasta local com o container (Hot-reload).}
+        \item Criptografar os arquivos da aplicação.
+    \end{enumerate}
+\end{tcolorbox}
+
+\vspace{1cm}
+\begin{center}
+    \textit{"O domínio sobre ferramentas tecnológicas complexas passa antes pelo domínio absoluto e repetitivo dos seus conceitos fundamentais." -- Equipe de Ensino}
+\end{center}
+
+\end{document}
