@@ -4,3 +4,6 @@ repos/
 __pycache__/
 *.pyc
 .env
+
+# Avaliações e provas — não publicar no repositório da disciplina
+atividade-02-avaliacao-teorica-1/
