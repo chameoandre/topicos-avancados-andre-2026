@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Alunos - API Integrada</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 30px auto; padding: 20px; }
+        form { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .campo { margin-bottom: 10px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { padding: 8px 15px; background-color: #1e3c5a; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #122538; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .btn-remover { background-color: #b43232; padding: 5px 10px; font-size: 0.85em; }
+        .btn-remover:hover { background-color: #8c2525; }
+    </style>
+</head>
+<body>
+
+    <h1>Controle de Alunos (Modo API)</h1>
+    
+    <!-- Formulário que não recarrega a página -->
+    <form id="formulario-cadastro">
+        <div class="campo">
+            <label for="nome">Nome do Aluno:</label>
+            <input type="text" id="nome" required placeholder="Digite o nome completo">
+        </div>
+        <div class="campo">
+            <label for="idade">Idade:</label>
+            <input type="number" id="idade" required min="0" max="120" placeholder="Ex: 17">
+        </div>
+        <button type="submit">Cadastrar via API</button>
+    </form>
+
+    <hr>
+
+    <h2>Alunos Cadastrados</h2>
+    
+    <!-- A lista começa vazia. O JavaScript irá preenchê-la -->
+    <ul id="lista-alunos"></ul>
+
+    <!-- O Script que controla o fluxo da aplicação assíncrona -->
+    <script>
+        const API_URL = '/api/alunos';
+
+        // Elementos do DOM capturados
+        const listaAlunos = document.querySelector('#lista-alunos');
+        const formulario = document.querySelector('#formulario-cadastro');
+        const inputNome = document.querySelector('#nome');
+        const inputIdade = document.querySelector('#idade');
+
+        // ==========================================
+        // FUNÇÃO 1: Carregar alunos do servidor (GET)
+        // ==========================================
+        function carregarAlunos() {
+            // Fetch realiza uma requisição HTTP assíncrona (promessa)
+            fetch(API_URL)
+                .then(resposta => resposta.json())
+                .then(alunos => {
+                    // Limpa a lista antes de desenhar
+                    listaAlunos.innerHTML = '';
+                    
+                    // Laço de repetição dinâmico em JavaScript
+                    alunos.forEach(aluno => {
+                        desenharAlunoNaTela(aluno);
+                    });
+                })
+                .catch(erro => console.error('Erro ao buscar alunos:', erro));
+        }
+
+        // Helper para criar o elemento <li> e injetar na lista
+        function desenharAlunoNaTela(aluno) {
+            const li = document.createElement('li');
+            li.id = `aluno-${aluno.id}`;
+            
+            // Define o conteúdo HTML interno do li
+            li.innerHTML = `
+                <span><strong>${aluno.nome}</strong> - ${aluno.idade} anos (Média: ${aluno.media.toFixed(1)})</span>
+                <button class="btn-remover" onclick="removerAluno(${aluno.id})">Remover</button>
+            `;
+            
+            listaAlunos.appendChild(li);
+        }
+
+        // ==========================================
+        // FUNÇÃO 2: Cadastrar novo aluno (POST com JSON)
+        // ==========================================
+        formulario.addEventListener('submit', function(evento) {
+            // Impede o formulário de enviar uma requisição tradicional 
+            // e recarregar a tela piscando em branco
+            evento.preventDefault();
+
+            const dados = {
+                nome: inputNome.value,
+                idade: parseInt(inputIdade.value)
+            };
+
+            // Envia a requisição POST com cabeçalho informando que o corpo é JSON
+            fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados) // Transforma o objeto JS em string JSON
+            })
+            .then(resposta => {
+                if (resposta.status === 201) {
+                    return resposta.json();
+                } else {
+                    throw new Error('Falha ao cadastrar aluno');
+                }
+            })
+            .then(novoAluno => {
+                // Desenha na tela dinamicamente sem recarregar o resto
+                desenharAlunoNaTela(novoAluno);
+                
+                // Limpa os campos do formulário
+                formulario.reset();
+            })
+            .catch(erro => alert(erro.message));
+        });
+
+        // ==========================================
+        // FUNÇÃO 3: Remover aluno (DELETE)
+        // ==========================================
+        function removerAluno(id) {
+            if (!confirm('Deseja realmente remover este aluno?')) return;
+
+            // Envia requisição DELETE com o ID na URL
+            fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            })
+            .then(resposta => {
+                if (resposta.ok) {
+                    // Remove o elemento físico do HTML imediatamente
+                    const elementoLi = document.querySelector(`#aluno-${id}`);
+                    if (elementoLi) {
+                        elementoLi.remove();
+                    }
+                } else {
+                    alert('Erro ao remover aluno no servidor.');
+                }
+            })
+            .catch(erro => console.error('Erro ao deletar:', erro));
+        }
+
+        // Executado automaticamente ao abrir a página
+        window.addEventListener('DOMContentLoaded', carregarAlunos);
+    </script>
+</body>
+</html>

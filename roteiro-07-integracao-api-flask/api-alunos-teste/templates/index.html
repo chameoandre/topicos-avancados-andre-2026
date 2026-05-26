@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Alunos</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <h1>Controle de Alunos</h1>
+    <form id="formulario-cadastro">
+        <input type="text" id="nome" placeholder="Nome do aluno" required>
+        <input type="number" id="idade" placeholder="Idade do aluno" required>
+        <button type="submit">Cadastrar via API</button>
+    </form>
+    <hr>
+    <h2>Alunos Cadastrados</h2>
+    <ul id="lista-alunos"></ul>
+
+    <script>
+        const API_URL = '/api/alunos';
+        const listaAlunos = document.getElementById('lista-alunos');
+        const formulario = document.getElementById('formulario-cadastro');
+        const inputNome = document.getElementById('nome');
+        const inputIdade = document.getElementById('idade');
+
+        function carregarAlunos() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(alunos => {
+                    listaAlunos.innerHTML = '';
+                    alunos.forEach(aluno => {
+                        desenharAlunoNaTela(aluno);
+                    });
+                })
+                .catch(error => console.error('Erro ao buscar alunos:', error));
+        }
+
+        // Carrega os alunos colocando-os como novos elementos na lista HTML
+        function desenharAlunoNaTela(aluno) {
+            const li = document.createElement('li');
+            li.id = `aluno-${aluno.id}`;
+            li.innerHTML = `
+                <span><strong>${aluno.nome}</strong> 
+                      (${aluno.idade} anos)</span> 
+                <button class="btn-deletar" onclick="deletarAluno(${aluno.id})">
+                    Deletar
+                </button>
+            `;
+            listaAlunos.appendChild(li);
+        }
+
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault(); // Evita recarga tradicional
+
+            const dados = {
+                nome: inputNome.value,
+                idade: parseInt(inputIdade.value)
+            };
+
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados) // Dados em JSON
+            })
+                .then(response => response.json()) // Resposta em JSON
+                .then(aluno => {
+                    desenharAlunoNaTela(aluno); // Desenha na tela
+                    formulario.reset(); // Limpa formulário
+                })
+                .catch(error => console.error('Erro ao cadastrar:', error));
+        });
+
+        function deletarAluno(id) {
+            if (!confirm('Deseja realmente deletar?')) return;
+
+            fetch(`${API_URL}/${id}`, { method: 'DELETE' }) // DELETE via API
+                .then(response => {
+                    if (response.ok) {
+                        const el = document.getElementById(
+                            `aluno-${id}`
+                        );
+                        if (el) el.remove(); // Remove da tela
+                    } else {
+                        alert('Erro ao deletar o aluno.');
+                    }
+                })
+                .catch(error => console.error('Erro ao deletar:', error));
+        }
+
+        // Carrega os alunos automaticamente ao abrir a página
+        window.addEventListener('DOMContentLoaded', carregarAlunos);
+    </script>
+</body>
+
+</html>

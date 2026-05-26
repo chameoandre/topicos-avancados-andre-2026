@@ -1,0 +1,126 @@
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+Aluno: Data: / /
+Prova T eórica de Tópicos A vançados em Informática
+Técnico de Informática2026-1
+Orientações:Prova individual. Responda com clareza.
+Gabarito.Preencha cada célula com a letra da opção correta (A, B, C, . . . ).
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15
+Questões descritivas: 3 na pág. 1.
+1.O que é CRUD? (0,6)
+(a) Criar, Rodar Um Dia
+(b) Context, Response, Update e Delete
+(c) Create, Resgatar, Update e Desativar
+(d) Criar, Resgatar, Atualizar e Deletar.
+2.Um JSON é: (0,6)
+(a) Linguagem de programação
+(b) Um dict (praticamente)
+(c) Protocolo de transporte
+(d) Tipo de container Docker
+3.Qual é a diferença entre utilizar uma máquina virtual e um docker? (1,0)
+R:
+4.O que faz "pip install"pacote? (0,6)
+(a) Instala um objeto no código.
+(b) Baixa alguma biblioteca paro python.
+(c) Gera um component no Ionic.
+(d) Cria uma rota http para acionamento do ask.
+5.Onde é utilizado linguagens de programação como o
+Python para gerenciar o sistema? (0,6)
+(a) Frontend
+(b) API
+(c) Banco de Dados
+(d) Sistema operacional
+6.Qual armação melhor descreve a diferença entre mo-
+nólito e microsserviços? (0,6)
+(a) Monólito signica sem banco de dados e microsserviço exige três
+servidores, um de frontend, outro de backend.
+(b) Monólito é obrigatoriamente um único arquivo .py e o microserviço
+não.
+(c) São sinônimos usados apenas em marketing de nuvem.
+(d) No monólito a aplicação tende a ser um bloco único
+7.Sobre criação de aplicações com Flask. (0,6)
+Marque V ou F:
+( ) É necessário importar "from ask import request"para iniciar a
+biblioteca.
+( ) @app.route vai no começo de toda função para declarar qual tipo
+de retorno a API vai receber
+( ) Declarar "Content-Type: application/json"signica que o retorno
+será em JSON
+( ) A diferença de HTTP e HTTPS é um certicado SSL
+É correto ou falso armar que:
+(a) V, V, F e F
+(b) V, F, V e F
+(c) V, F, V e V
+(d) V, F, F e V
+Página 1 / 2e4x-4hc-t
+8.Sobre o padrão MVC (MRC no python). (0,6)
+Marque V ou F:
+( ) Model é usado para declarar as classes
+( ) O código ca menor e menos trabalhoso de se fazer.
+( ) Usado principalmente para organizar o código.
+( ) MVC é considerado uma de varias Design Patterns
+É correto ou falso armar que:
+(a) V, F, V e F
+(b) V, F, V e V
+(c) V, F, F e V
+(d) F, F, F e V
+9.De forma objetiva, o que é uma API (Application Pro-
+gramming Interface)? (0,6)
+(a) Apenas a interface gráca de um site (botões e cores).
+(b) Um programa conectado na internet que funciona quando é cha-
+mado por outro sistema ou aplicações.
+(c) O mesmo que um sistema operacional completo.
+(d) Um tipo exclusivo de banco de dados relacional.
+10.O que faz docker run? (0,6)
+(a) Apaga todas as imagens
+(b) Compila o código
+(c) Só lista containers parados
+(d) Executa um container
+11.Sobre programação em nuvem. (0,6)
+Marque V ou F:
+( ) Um computador ligado 24hrs em algum lugar do mundo.
+( ) Acessar sob demanda um provedor.
+( ) É possível trabalhar com docker dentro da nuvem.
+( ) É programar em altas alturas e com uma autoestima alta.
+É correto ou falso armar que:
+(a) V, V, V e F
+(b) F, V, V e F
+(c) F, F, F e V
+(d) F, V, F e F
+12.O que representa um .git num projeto? (0,6)
+(a) Uma cópia completa do repositório em outro servidor
+(b) Um snapshot registrado do estado dos arquivos naquele momento
+(c) Apenas a diferença entre duas branches
+(d) Um arquivo/pasta de conguração do GitHub
+13.Em respostas de API seguindo os códigos de HTTP .
+(0,6)
+Marque V ou F:
+( ) Todas as respostas entre 200 e 299, são referentes a sucesso de uma
+ação
+( ) O retorno 4XX, todos são referentes a erros internos do servidor.
+( ) É sempre necessário responder um código para a aplicação.
+( ) O código 404, signica que a página/objeto não existe ou não se
+encontra mais naquela URL.
+É correto ou falso armar que:
+(a) F, F, F e V
+(b) V, V, F e V
+(c) V, F, F, e V
+(d) F, F, F, e V
+14.Sobre programação em python básica. (0,6)
+Marque V ou F:
+( ) Uma dict, é uma lista de objetos ordenada em 0,1,2,3,4 [...]
+( ) Para declarar uma função no python, é necessário escrever "fun"ao
+iniciar a declaração.
+( ) Usar parênteses após um nome é declarar que é uma função.
+( ) Um objeto não pode possuir funções e nem atributos
+É correto ou falso armar que:
+(a) V, F, V e F
+(b) V, F, V e V
+(c) F, F, V e F
+(d) F, V, V e F
+15.O que é uma imagem Docker? (1,2)
+(a) Um volume separado com arquivos do sistema todo
+(b) Pacote com arquivos e metadados para criar containers
+(c) Log de commits Git
+(d) Arquivo .env
+Sucesso na atividade! Atenciosamente Ignacio Sepúlveda
+Página 2 / 2e4x-4hc-t
