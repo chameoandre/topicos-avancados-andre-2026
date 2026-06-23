@@ -535,7 +535,7 @@ def api_alunos(request):
         return JsonResponse(novo.to_dict(), status=201)
 
 @csrf_exempt
-def api_alunos_detalhe(request, id):
+def api_aluno_detalhe(request, id):
     # DELETE: Remover aluno
     if request.method == 'DELETE':
         try:
@@ -567,8 +567,8 @@ urlpatterns = [
     path('', views.pagina_inicial, name='pagina_inicial'),
     path('api/alunos', views.api_alunos, name='api_alunos'),
     path('api/alunos/<int:id>', 
-         views.api_alunos_detalhe, 
-         name='api_alunos_detalhe'),
+         views.api_aluno_detalhe, 
+         name='api_aluno_detalhe'),
 ]
 \end{verbatim}
 \end{boxCodigo}

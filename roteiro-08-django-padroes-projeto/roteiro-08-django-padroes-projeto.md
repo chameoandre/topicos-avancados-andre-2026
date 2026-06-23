@@ -296,7 +296,7 @@ def api_alunos(request):
             return JsonResponse({"erro": "JSON inválido."}, status=400)
 
 @csrf_exempt
-def api_alunos_detalhe(request, id):
+def api_aluno_detalhe(request, id):
     # Caso 3: Deletar Aluno (DELETE)
     if request.method == 'DELETE':
         try:
@@ -328,7 +328,7 @@ Precisamos estruturar o sistema de roteamento. O projeto Django possui um arquiv
        
        # Endpoints de API REST
        path('api/alunos', views.api_alunos, name='api_alunos'),
-       path('api/alunos/<int:id>', views.api_alunos_detalhe, name='api_alunos_detalhe'),
+       path('api/alunos/<int:id>', views.api_aluno_detalhe, name='api_aluno_detalhe'),
    ]
    ```
 
