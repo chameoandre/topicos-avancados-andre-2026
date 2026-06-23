@@ -98,6 +98,9 @@ No Flask (Roteiro 07), o servidor lidava com todas as rotas e gravava as altera�
 
 ## 4. Roteiro Prático: Criando e Migrando a Aplicação para Django
 
+> [!TIP]
+> O código-fonte completo desta atividade prática está disponível no repositório oficial da disciplina no GitHub: [escola_project no GitHub](https://github.com/chameoandre/topicos-avancados-andre-2026/tree/main/roteiro-08-django-padroes-projeto/escola_project).
+
 Vamos recriar o backend da nossa aplicação de cadastro de alunos usando a arquitetura de projetos do Django, mas aproveitando o mesmo frontend Single Page Application (SPA) que criamos no Roteiro 07.
 
 ### Parte 0 – Criando o Projeto e App no Django
@@ -600,3 +603,9 @@ Vamos iniciar o servidor de desenvolvimento do Django e validar o funcionamento 
     *   No navegador, acesse: `http://127.0.0.1:8000/admin`.
     *   Insira o nome de usuário e a senha do superusuário que você criou no passo anterior.
     *   Na página inicial, clique em **Alunos** para listar, cadastrar, editar e remover registros diretamente pelo painel administrativo padrão do framework.
+
+---
+
+## Links Importantes
+
+* **Repositório da Disciplina (GitHub):** [Acesse a pasta do projeto escola_project no GitHub](https://github.com/chameoandre/topicos-avancados-andre-2026/tree/main/roteiro-08-django-padroes-projeto/escola_project)
