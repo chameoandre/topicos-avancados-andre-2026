@@ -1,0 +1,746 @@
+\documentclass[12pt,a4paper]{article}
+
+% =====================================================
+% PACOTES
+% =====================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\shorthandoff{"}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage[table]{xcolor}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{newtxtext,newtxmath}
+\usepackage[most]{tcolorbox}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, babel}
+\usepackage{tabularx}
+
+\geometry{
+    top=2.5cm,
+    bottom=3cm,
+    left=1.5cm,
+    right=1.5cm
+}
+
+\onehalfspacing
+
+% =====================================================
+% CORES PERSONALIZADAS
+% =====================================================
+\definecolor{azulTitulo}{RGB}{30,60,90}
+\definecolor{azulObjetivos}{RGB}{30,60,90}
+\definecolor{cinzaCodigo}{RGB}{245,245,245}
+\definecolor{vermelhoCodigo}{RGB}{180,50,50}
+\definecolor{mostarda}{RGB}{204,153,0}
+
+% =====================================================
+% BOXES
+% =====================================================
+\newtcolorbox{boxAtividade}[1][]{
+    breakable,
+    enhanced,
+    colback=azulTitulo!5,
+    colframe=azulTitulo,
+    boxrule=0pt,
+    arc=6pt,
+    outer arc=6pt,
+    boxsep=0pt,
+    left=14pt,
+    right=14pt,
+    top=16pt,
+    bottom=14pt,
+    title=#1,
+    coltitle=white,
+    colbacktitle=azulTitulo,
+    fonttitle=\bfseries,
+    attach boxed title to top left={
+        yshift=-3mm,
+        xshift=6mm
+    },
+    boxed title style={
+        sharp corners,
+        boxrule=0pt
+    }
+}
+
+\newtcolorbox{boxCodigo}{
+    breakable,
+    colback=cinzaCodigo,
+    colframe=vermelhoCodigo,
+    boxrule=0.8pt,
+    arc=2pt,
+    left=6pt,
+    right=6pt,
+    top=6pt,
+    bottom=6pt,
+    borderline={0.5pt}{0pt}{vermelhoCodigo,dashed}
+}
+
+\definecolor{verdeResultado}{RGB}{22,101,52}
+\newtcolorbox{boxResultado}[1][]{
+    breakable,
+    enhanced,
+    colback=verdeResultado!6,
+    colframe=verdeResultado,
+    boxrule=0pt,
+    arc=6pt,
+    outer arc=6pt,
+    boxsep=0pt,
+    left=14pt,
+    right=14pt,
+    top=16pt,
+    bottom=14pt,
+    title=#1,
+    coltitle=white,
+    colbacktitle=verdeResultado,
+    fonttitle=\bfseries,
+    attach boxed title to top left={
+        yshift=-3mm,
+        xshift=6mm
+    },
+    boxed title style={
+        sharp corners,
+        boxrule=0pt
+    }
+}
+
+% =====================================================
+% CABEÇALHO E RODAPÉ
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{
+    % Tenta carregar a logo se o caminho estiver correto, senão ignora
+    \IfFileExists{../../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}{
+        \includegraphics[height=1.4cm]{../../uc-topicos-avancados-latex/figures/garopaba_horizontal_marca2015_PNG.png}
+    }{
+        \IfFileExists{../../../../orientacoes-alunos/2026/superior/2026-marilia-stefenon/repo/figures/garopaba_horizontal_marca2015_PNG.png}{
+            \includegraphics[height=1.4cm]{../../../../orientacoes-alunos/2026/superior/2026-marilia-stefenon/repo/figures/garopaba_horizontal_marca2015_PNG.png}
+        }{IFSC - Garopaba}
+    }
+}
+\fancyhead[R]{
+    \textbf{Roteiro Prático 08}\\
+    UC – Tópicos Avançados em Informática\\
+    Técnico Integrado em Informática
+}
+\fancyfoot[L]{\small\textit{Transição para Django e Padrões de Projeto - Roteiro 08}}
+\fancyfoot[R]{\small Página \thepage}
+\renewcommand{\footrulewidth}{2.4pt}
+\setlength{\headheight}{45pt}
+
+% =====================================================
+% ESTILO DE SEÇÃO
+% =====================================================
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{azulTitulo}}
+{\thesection}
+{1em}
+{}
+[\vspace{0.3cm}\hrule]
+
+\begin{document}
+
+\section*{Roteiro Prático 08 — Transição para Django e Padrões de Projeto}
+
+\begin{boxAtividade}[Objetivos da Aula]
+Ao final desta aula, o estudante será capaz de:
+\begin{itemize}
+    \item Compreender o padrão de arquitetura de software \textbf{MVC (Model-View-Controller)} e sua adaptação no Django, o \textbf{MTV (Model-Template-View)};
+    \item Realizar a transição prática de uma aplicação backend baseada em Flask para o framework \textbf{Django};
+    \item Substituir a persistência de dados volátil (lista em memória RAM) pelo \textbf{Django ORM} conectado a um banco de dados \textbf{SQLite};
+    \item Desenvolver rotas de API REST em Django que recebem e respondem no formato \textbf{JSON} usando \texttt{JsonResponse};
+    \item Habilitar e configurar o painel administrativo nativo do Django (\textbf{Django Admin}) para gerenciar os dados da aplicação.
+\end{itemize}
+\end{boxAtividade}
+
+\subsection*{Ferramentas Necessárias}
+
+Python, Django, SQLite, JavaScript básico (Fetch API), HTML5/CSS3, terminal, navegador web.
+
+---
+
+\section{Fundamentação Teórica: Padrões de Projeto e MVC vs. MTV}
+
+À medida que as aplicações web crescem, organizar o código torna-se um desafio. Para evitar arquivos gigantescos contendo regras de negócio, layouts e lógica de banco de dados misturados (o famoso ``código espaguete''), a engenharia de software define os \textbf{Padrões de Projeto (Design Patterns)} e \textbf{Padrões Arquiteturais}.
+
+O padrão arquitetural mais consagrado para a Web é o \textbf{MVC (Model-View-Controller)}:
+\begin{itemize}
+    \item \textbf{Model (Modelo):} Mapeia a estrutura dos dados e define as regras de negócio. Interage diretamente com o banco de dados.
+    \item \textbf{View (Visão):} É a interface de apresentação exibida ao usuário (páginas HTML, telas de celular).
+    \item \textbf{Controller (Controlador):} É o cérebro que intercepta as requisições HTTP, solicita os dados necessários ao Model e define qual View apresentará a resposta final.
+\end{itemize}
+
+\subsection{O Padrão MTV do Django}
+
+O Django adota uma variação desse padrão chamada \textbf{MTV (Model-Template-View)}. A lógica é idêntica ao MVC, mudando apenas o papel de alguns componentes:
+\begin{itemize}
+    \item \textbf{Model:} Igual ao MVC. Define os objetos que serão convertidos em tabelas de banco de dados via ORM.
+    \item \textbf{Template (equivalente à View do MVC):} É o arquivo HTML estático ou enriquecido com a sintaxe de template do Django que define a visualização gráfica.
+    \item \textbf{View (equivalente ao Controller do MVC):} É a função ou classe Python que recebe a requisição HTTP do usuário, processa a informação e decide se renderizará um Template ou retornará dados puros em JSON.
+\end{itemize}
+
+O fluxo de funcionamento do MTV no Django é ilustrado na Figura~\ref{fig:django-mtv-flow}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.8cm and 2.5cm,
+    box/.style={draw=azulTitulo, fill=azulTitulo!5, thick, rounded corners=4pt, minimum width=3.5cm, minimum height=1.1cm, align=center, font=\small},
+    db/.style={draw=mostarda, fill=mostarda!5, thick, rounded corners=4pt, minimum width=3.5cm, minimum height=1.1cm, align=center, font=\small},
+    arrow/.style={thick, -{Stealth[scale=1.2]}, draw=azulTitulo},
+    dasharrow/.style={thick, dashed, -{Stealth[scale=1.2]}, draw=vermelhoCodigo}
+]
+    % Nós do Diagrama
+    \node[box] (user) {Usuário / Navegador};
+    \node[box, right=of user] (urls) {URL Dispatcher\\(urls.py)};
+    \node[box, below=of urls] (views) {View (Controller)\\(views.py)};
+    \node[box, left=of views] (models) {Model\\(models.py)};
+    \node[db, below=of models] (db) {Banco de Dados\\(SQLite / db.sqlite3)};
+    \node[box, below=of views] (templates) {Template (View)\\ (index.html / JSON)};
+
+    % Conexões
+    \draw[arrow] (user) -- node[above, font=\tiny\sffamily] {1. Requisição HTTP} (urls);
+    \draw[arrow] (urls) -- node[right, font=\tiny\sffamily] {2. Rota encontrada} (views);
+    
+    % Divisão de setas paralelas horizontais (passos 3 e 6)
+    \draw[arrow] ([yshift=0.2cm]views.west) -- node[above, font=\tiny\sffamily] {3. Consulta dados} ([yshift=0.2cm]models.east);
+    \draw[dasharrow] ([yshift=-0.2cm]models.east) -- node[below, font=\tiny\sffamily] {6. Retorna objetos} ([yshift=-0.2cm]views.west);
+    
+    % Divisão de setas paralelas verticais (passos 4 e 5)
+    \draw[arrow] ([xshift=-0.5cm]models.south) -- node[left, font=\tiny\sffamily] {4. SQL query} ([xshift=-0.5cm]db.north);
+    \draw[dasharrow] ([xshift=0.5cm]db.north) -- node[right, font=\tiny\sffamily] {5. Retorna registros} ([xshift=0.5cm]models.south);
+    
+    \draw[arrow] (views) -- node[right, font=\tiny\sffamily] {7. Passa dados} (templates);
+    
+    % Rota externa para evitar transpassar caixas (passo 8)
+    \draw[dasharrow] (templates.south) -- ++(0,-0.8) -- ++(-8.5,0) -- node[left, font=\tiny\sffamily, near end] {8. Resposta HTTP (JSON/HTML)} ([xshift=-0.75cm]user.west) -- (user.west);
+
+\end{tikzpicture}
+\caption{Ciclo de vida de uma requisição HTTP na arquitetura MTV do Django.}
+\label{fig:django-mtv-flow}
+\end{figure}
+
+\newpage
+
+\section{Comparativo: Flask vs. Django}
+
+Para quem já domina o microframework Flask, a tabela a seguir facilita a transição ao mapear os conceitos equivalentes no Django:
+
+\vspace{0.3cm}
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.4}
+\rowcolors{2}{azulTitulo!5}{white}
+\begin{tabularx}{\linewidth}{|p{3.5cm}|X|X|}
+\hline
+\rowcolor{azulTitulo}
+\color{white}\textbf{Aspecto} & 
+\color{white}\textbf{Flask (Roteiro 07)} & 
+\color{white}\textbf{Django (Roteiro 08)} \\ \hline
+
+\textbf{Abordagem} & 
+\textbf{Microframework:} Leve, com alta liberdade para estruturar as pastas e escolher bancos de dados externos. & 
+\textbf{Framework robusto:} Estrutura rígida de arquivos pré-configurada, focada em produtividade. \\ \hline
+
+\textbf{Persistência} & 
+\textbf{Em Memória RAM:} Lista estática (\texttt{alunos = []}), que se apaga sempre que o servidor reinicia. & 
+\textbf{Django ORM:} Mapeamento objeto-relacional automático direto em banco SQL local (\texttt{db.sqlite3}). \\ \hline
+
+\textbf{Mapeamento de Rotas} & 
+Decoradores diretamente nas funções de controle (\texttt{@app.route}). & 
+Centralizado no arquivo \texttt{urls.py} da aplicação e do projeto. \\ \hline
+
+\textbf{Painel de Controle} & 
+Não possui (deve ser programado do zero). & 
+\textbf{Django Admin:} Gerado automaticamente a partir dos models registrados. \\ \hline
+
+\textbf{Retorno JSON} & 
+Função \texttt{jsonify(dados)} do Flask. & 
+Classe \texttt{JsonResponse(dados)} de \texttt{django.http}. \\ \hline
+\end{tabularx}
+\end{center}
+
+\section{Mapeamento de Mudanças e Impacto na Aplicação}
+
+Para efetuar a transição do Flask para o Django, o nosso código sofrerá reestruturações importantes. A tabela a seguir descreve o que muda e qual o impacto direto dessa alteração na arquitetura e funcionamento do projeto:
+
+\vspace{0.3cm}
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.4}
+\rowcolors{2}{azulTitulo!5}{white}
+\begin{tabularx}{\linewidth}{|p{3.5cm}|p{3.5cm}|X|}
+\hline
+\rowcolor{azulTitulo}
+\color{white}\textbf{Conceito Original (Flask)} & 
+\color{white}\textbf{Novo Componente (Django)} & 
+\color{white}\textbf{Mudança Prática e Impacto na Aplicação} \\ \hline
+
+\textbf{\texttt{aluno.py} (Classe Pura)} & 
+\textbf{\texttt{alunos/models.py} (Model)} & 
+Herdamos de \texttt{models.Model}. O Django ORM cuida do \texttt{id} autoincrementável e do mapeamento relacional. \\ \hline
+
+\textbf{Lista RAM (\texttt{alunos = []})} & 
+\textbf{Banco SQLite (\texttt{db.sqlite3})} & 
+Os dados passam a ser gravados fisicamente em banco de dados, garantindo a persistência das informações mesmo ao reiniciar. \\ \hline
+
+\textbf{\texttt{app.py} (Arquivo Único)} & 
+\textbf{Views e URLs desacoplados} & 
+A lógica de negócio (\texttt{views.py}) fica separada da configuração de rotas (\texttt{urls.py}), facilitando a modularidade. \\ \hline
+
+\textbf{Decorador \texttt{@app.route()}} & 
+\textbf{Roteamento em \texttt{urls.py}} & 
+Todas as URLs do sistema são mapeadas de forma centralizada e organizada em listas de caminhos (\texttt{path}). \\ \hline
+
+\textbf{Função \texttt{jsonify()}} & 
+\textbf{Classe \texttt{JsonResponse()}} & 
+Retorno nativo estruturado em JSON contendo os cabeçalhos corretos gerenciados pelo próprio framework. \\ \hline
+\end{tabularx}
+\end{center}
+
+\newpage
+
+\subsection{Fluxo Comparativo de Arquitetura (Croqui de Transição)}
+
+Abaixo apresentamos o croqui de transição estrutural. Ele ilustra o caminho da requisição HTTP e a persistência dos dados entre a abordagem em Flask desenvolvida anteriormente e a nova arquitetura baseada no Django:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    scale=0.85,
+    every node/.style={transform shape, font=\small},
+    box/.style={draw=azulTitulo, fill=azulTitulo!5, thick, rounded corners=4pt, minimum width=3.4cm, minimum height=1.0cm, align=center},
+    db/.style={draw=mostarda, fill=mostarda!5, thick, rounded corners=4pt, minimum width=3.4cm, minimum height=1.0cm, align=center},
+    ram/.style={draw=vermelhoCodigo, fill=vermelhoCodigo!5, thick, rounded corners=4pt, minimum width=3.4cm, minimum height=1.0cm, align=center},
+    arrow/.style={thick, -{Stealth[scale=1.1]}, draw=azulTitulo}
+]
+
+    % --- FLASK PARADIGM ---
+    \node[box] (f_browser) at (0, 0) {Navegador / Cliente\\(HTML + JS Fetch)};
+    \node[box, below=1.2cm of f_browser] (f_server) {Servidor Flask\\(app.py)};
+    \node[ram, below=1.2cm of f_server] (f_ram) {Memória RAM\\(Lista Python: volátil)};
+
+    \draw[arrow] ([xshift=-0.4cm]f_browser.south) -- node[left, font=\tiny\sffamily] {GET/POST} ([xshift=-0.4cm]f_server.north);
+    \draw[arrow] ([xshift=0.4cm]f_server.north) -- node[right, font=\tiny\sffamily] {JSON} ([xshift=0.4cm]f_browser.south);
+    \draw[arrow] ([xshift=-0.4cm]f_server.south) -- node[left, font=\tiny\sffamily] {Escrita} ([xshift=-0.4cm]f_ram.north);
+    \draw[arrow] ([xshift=0.4cm]f_ram.north) -- node[right, font=\tiny\sffamily] {Leitura} ([xshift=0.4cm]f_server.south);
+
+    \node[anchor=south, font=\bfseries\color{azulTitulo}] at (0, 0.9) {Arquitetura Flask (Roteiro 07)};
+
+    % --- DJANGO PARADIGM ---
+    \node[box] (d_browser) at (7.0, 0) {Navegador / Cliente\\(HTML + JS Fetch)};
+    \node[box, below=1.2cm of d_browser] (d_server) {Servidor Django\\(urls.py $\rightarrow$ views.py)};
+    \node[box, below=1.2cm of d_server] (d_orm) {Django ORM\\(models.py)};
+    \node[db, below=1.2cm of d_orm] (d_db) {Banco SQLite\\(db.sqlite3: persistente)};
+
+    \draw[arrow] ([xshift=-0.4cm]d_browser.south) -- node[left, font=\tiny\sffamily] {GET/POST/DEL} ([xshift=-0.4cm]d_server.north);
+    \draw[arrow] ([xshift=0.4cm]d_server.north) -- node[right, font=\tiny\sffamily] {JSON} ([xshift=0.4cm]d_browser.south);
+    \draw[arrow] ([xshift=-0.4cm]d_server.south) -- node[left, font=\tiny\sffamily] {Consulta} ([xshift=-0.4cm]d_orm.north);
+    \draw[arrow] ([xshift=0.4cm]d_orm.north) -- node[right, font=\tiny\sffamily] {Objetos} ([xshift=0.4cm]d_server.south);
+    \draw[arrow] ([xshift=-0.4cm]d_orm.south) -- node[left, font=\tiny\sffamily] {Gravação} ([xshift=-0.4cm]d_db.north);
+    \draw[arrow] ([xshift=0.4cm]d_db.north) -- node[right, font=\tiny\sffamily] {SQL data} ([xshift=0.4cm]d_orm.south);
+
+    \node[anchor=south, font=\bfseries\color{azulTitulo}] at (7.0, 0.9) {Arquitetura Django (Roteiro 08)};
+
+\end{tikzpicture}
+\caption{Mapeamento dos fluxos de dados e croqui de arquitetura: Flask vs. Django.}
+\label{fig:comparacao-fluxos}
+\end{figure}
+
+---
+
+\section{Roteiro Prático: Criando a Aplicação Escola no Django}
+
+Vamos recriar o backend da nossa aplicação de alunos usando a arquitetura modular do Django, preservando a interface dinâmica SPA que construímos na aula anterior.
+
+\begin{boxAtividade}[Parte 0 – Criando o Projeto e App no Django]
+\textbf{Por que fazemos isso?} O Django exige que organizemos o código em um contêiner global (o \textbf{Projeto}) e em módulos independentes de funcionalidades (os \textbf{Apps}). Aqui, vamos instalar o framework e inicializar a estrutura básica do projeto \texttt{escola\_project} e o app \texttt{alunos}.
+
+Abra o terminal com seu ambiente virtual \texttt{venv} ativado e execute os seguintes comandos:
+\begin{boxCodigo}
+\begin{verbatim}
+# 1. Instale o Django na venv
+pip install django
+
+# 2. Crie o projeto "escola_project" na pasta atual
+django-admin startproject escola_project .
+
+# 3. Crie o app "alunos"
+django-admin startapp alunos
+\end{verbatim}
+\end{boxCodigo}
+
+A estrutura de diretórios gerada automaticamente na raiz do seu projeto deve ser semelhante a esta:
+\begin{boxCodigo}
+\begin{verbatim}
+roteiro08-django-padroes/
+|-- escola_project/
+|   |-- __init__.py
+|   |-- asgi.py
+|   |-- settings.py      # Configurações globais
+|   |-- urls.py          # Rotas centrais
+|   `-- wsgi.py
+|-- alunos/
+|   |-- migrations/      # Histórico de migrações do banco
+|   |-- __init__.py
+|   |-- admin.py         # Configuração do Django Admin
+|   |-- apps.py
+|   |-- models.py        # Modelos (Estrutura de dados)
+|   |-- tests.py
+|   `-- views.py         # Lógica das rotas (Controllers)
+`-- manage.py            # Utilitário de linha de comando
+\end{verbatim}
+\end{boxCodigo}
+\end{boxAtividade}
+
+\newpage
+
+\begin{boxAtividade}[Parte 1 – Registrando a App e Configurações]
+\textbf{Por que fazemos isso?} O Django precisa saber quais módulos (apps) estão ativos no projeto para carregar seus modelos e rotas. Também configuramos o idioma e o fuso horário para que o banco e o sistema operem no padrão local de forma nativa.
+
+Abra o arquivo \texttt{escola\_project/settings.py} e registre nosso app, além de configurar as datas e idioma da aplicação:
+
+1. Na lista \texttt{INSTALLED\_APPS}, adicione o app \texttt{'alunos'}:
+\begin{boxCodigo}
+\begin{verbatim}
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    # Nosso app registrado
+    'alunos',
+]
+\end{verbatim}
+\end{boxCodigo}
+
+2. Altere o idioma e fuso horário no final do arquivo:
+\begin{boxCodigo}
+\begin{verbatim}
+LANGUAGE_CODE = 'pt-br'
+TIME_ZONE = 'America/Sao_Paulo'
+\end{verbatim}
+\end{boxCodigo}
+\end{boxAtividade}
+
+
+\begin{boxAtividade}[Parte 2 – Definindo o Modelo com Django ORM (alunos/models.py)]
+\textbf{Por que fazemos isso?} A camada Model define a estrutura lógica dos dados. O Django ORM permite que definamos tabelas de banco de dados usando classes Python simples. O framework se encarrega de criar e gerenciar a chave primária (\texttt{id}) automaticamente de forma autoincremental.
+
+Substitua o conteúdo de \texttt{alunos/models.py} pelo código Python abaixo. Note que o ID é gerado automaticamente pelo Django, não exigindo controle manual:
+\begin{boxCodigo}
+\begin{verbatim}
+from django.db import models
+
+class Aluno(models.Model):
+    nome = models.CharField(max_length=100, verbose_name="Nome Completo")
+    idade = models.IntegerField(verbose_name="Idade")
+    nota = models.FloatField(default=0.0, verbose_name="Média")
+
+    def aprovado(self):
+        return self.nota >= 7.0
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome": self.nome,
+            "idade": self.idade,
+            "media": self.nota,
+            "aprovado": self.aprovado(),
+        }
+
+    def __str__(self):
+        return f"{self.nome} ({self.idade} anos)"
+\end{verbatim}
+\end{boxCodigo}
+\end{boxAtividade}
+
+\newpage
+
+\begin{boxAtividade}[Parte 3 – Criando e Aplicando Migrações]
+\textbf{Por que fazemos isso?} O Django não altera as tabelas do banco de dados automaticamente ao salvarmos o arquivo \texttt{models.py}. Precisamos primeiro gerar os planos de migração (\texttt{makemigrations}) e depois executá-los (\texttt{migrate}) para que o banco físico SQLite seja sincronizado.
+
+Sempre que alteramos a estrutura dos nossos modelos, precisamos rodar as migrações para refletir as mudanças nas tabelas físicas do banco SQLite:
+\begin{boxCodigo}
+\begin{verbatim}
+# 1. Gera os roteiros de migração na pasta migrations/
+python manage.py makemigrations
+
+# 2. Executa fisicamente e cria as tabelas no SQLite (db.sqlite3)
+python manage.py migrate
+\end{verbatim}
+\end{boxCodigo}
+\end{boxAtividade}
+
+
+\begin{boxAtividade}[Parte 4 – Criando as Views da API REST (alunos/views.py)]
+\textbf{Por que fazemos isso?} A View (Controller) gerencia as requisições HTTP enviadas pelo usuário. Como nosso frontend é uma aplicação de página única (SPA), nossas views não devem retornar páginas HTML inteiras em cada requisição; em vez disso, retornam dados estruturados em JSON (\texttt{JsonResponse}) para que o JavaScript os renderize na tela.
+
+Abra \texttt{alunos/views.py} e insira as funções de visualização. Como faremos requisições assíncronas do JavaScript usando JSON, utilizaremos a classe \texttt{JsonResponse} e o decorador \texttt{@csrf\_exempt} para simplificar a autenticação de rotas POST/DELETE em desenvolvimento local.
+
+Primeiro, insira os \textit{imports} necessários e a rota que carrega a tela inicial do sistema:
+\begin{boxCodigo}
+\begin{verbatim}
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from .models import Aluno
+
+# Tela inicial (Renderiza index.html)
+def pagina_inicial(request):
+    return render(request, 'index.html')
+\end{verbatim}
+\end{boxCodigo}
+
+\vspace{0.3cm}
+Em seguida, adicione as rotas de API responsáveis por listar, cadastrar e deletar os alunos:
+\begin{boxCodigo}
+\begin{verbatim}
+@csrf_exempt
+def api_alunos(request):
+    # GET: Listar todos os alunos
+    if request.method == 'GET':
+        lista_alunos = Aluno.objects.all()
+        dados = [aluno.to_dict() for aluno in lista_alunos]
+        return JsonResponse(dados, safe=False, status=200)
+
+    # POST: Criar novo aluno
+    elif request.method == 'POST':
+        payload = json.loads(request.body)
+        nome = payload.get('nome')
+        idade = payload.get('idade')
+        media = payload.get('media', 8.5) # Valor padrão
+
+        if not nome or not isinstance(idade, int):
+            return JsonResponse({"erro": "Dados inválidos."}, status=400)
+
+        novo = Aluno.objects.create(nome=nome, idade=idade, nota=media)
+        return JsonResponse(novo.to_dict(), status=201)
+
+@csrf_exempt
+def api_alunos_detalhe(request, id):
+    # DELETE: Remover aluno
+    if request.method == 'DELETE':
+        try:
+            aluno = Aluno.objects.get(id=id)
+            aluno.delete()
+            return JsonResponse(
+                {"mensagem": "Removido com sucesso"}, status=200
+            )
+        except Aluno.DoesNotExist:
+            return JsonResponse({"erro": "Nao encontrado"}, status=404)
+\end{verbatim}
+\end{boxCodigo}
+\end{boxAtividade}
+
+\newpage
+
+\begin{boxAtividade}[Parte 5 – Mapeando as URLs da Aplicação]
+\textbf{Por que fazemos isso?} O Django usa o arquivo \texttt{urls.py} (URL Dispatcher) para mapear os caminhos digitados no navegador e associá-los às funções controladoras corretas do arquivo \texttt{views.py}. Criamos arquivos locais no app e os incluímos no roteador central do projeto para garantir a modularidade.
+
+Configuraremos o sistema de roteamento criando as URLs do aplicativo e incluindo-as nas rotas centrais do projeto.
+
+1. Crie o arquivo \texttt{alunos/urls.py} com o seguinte conteúdo:
+\begin{boxCodigo}
+\begin{verbatim}
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.pagina_inicial, name='pagina_inicial'),
+    path('api/alunos', views.api_alunos, name='api_alunos'),
+    path('api/alunos/<int:id>', 
+         views.api_alunos_detalhe, 
+         name='api_alunos_detalhe'),
+]
+\end{verbatim}
+\end{boxCodigo}
+
+2. Abra o arquivo central de rotas \texttt{escola\_project/urls.py} e configure o \texttt{include}:
+\begin{boxCodigo}
+\begin{verbatim}
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('alunos.urls')),
+]
+\end{verbatim}
+\end{boxCodigo}
+\end{boxAtividade}
+
+
+\begin{boxAtividade}[Parte 6 – Integrando a Interface SPA Estática (index.html)]
+\textbf{Por que fazemos isso?} O Django organiza recursos de visualização de forma isolada. Colocamos arquivos HTML na pasta \texttt{templates/} e arquivos auxiliares (como CSS e JavaScript) na pasta \texttt{static/}, ensinando o framework a localizá-los e servi-los de forma otimizada com tags como \texttt{\{\% load static \%\}}.
+
+O Django possui pastas específicas para arquivos HTML (\texttt{templates/}) e arquivos de recursos (\texttt{static/}). Crie essa hierarquia de pastas no seu terminal:
+\begin{boxCodigo}
+\begin{verbatim}
+mkdir -p alunos/templates
+mkdir -p alunos/static
+\end{verbatim}
+\end{boxCodigo}
+
+1. Crie o arquivo \texttt{alunos/templates/index.html} e cole o código adaptado. A primeira parte contém a estrutura HTML básica e o formulário de cadastro:
+\begin{boxCodigo}
+\begin{verbatim}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Alunos (Django)</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>Controle de Alunos</h1>
+    <form id="formulario-cadastro">
+        <input type="text" id="nome" placeholder="Nome do aluno" required>
+        <input type="number" id="idade" 
+               placeholder="Idade do aluno" required>
+        <button type="submit">Cadastrar via API</button>
+    </form>
+    <hr>
+    <h2>Alunos Cadastrados</h2>
+    <ul id="lista-alunos"></ul>
+\end{verbatim}
+\end{boxCodigo}
+
+\vspace{0.3cm}
+A segunda parte inicia a tag \texttt{<script>} com as variáveis globais, a função de carregamento assíncrono e a renderização dos alunos na tela:
+\begin{boxCodigo}
+\begin{verbatim}
+    <script>
+        const API_URL = '/api/alunos';
+        const listaAlunos = document.getElementById('lista-alunos');
+        const formulario = document.getElementById('formulario-cadastro');
+        const inputNome = document.getElementById('nome');
+        const inputIdade = document.getElementById('idade');
+
+        function carregarAlunos() {
+            fetch(API_URL)
+                .then(res => res.json())
+                .then(alunos => {
+                    listaAlunos.innerHTML = '';
+                    alunos.forEach(aluno => desenharAlunoNaTela(aluno));
+                });
+        }
+
+        function desenharAlunoNaTela(aluno) {
+            const li = document.createElement('li');
+            li.id = `aluno-${aluno.id}`;
+            li.innerHTML = `
+                <span><strong>${aluno.nome}</strong> (${aluno.idade} anos) 
+                      - Média: ${aluno.media} 
+                      [${aluno.aprovado ? 'Aprovado' : 'Reprovado'}]</span>
+                <button class="btn-deletar" 
+                        onclick="deletarAluno(${aluno.id})">Deletar</button>
+            `;
+            listaAlunos.appendChild(li);
+        }
+\end{verbatim}
+\end{boxCodigo}
+
+\vspace{0.3cm}
+Por fim, a terceira parte contém os eventos de submissão do formulário, a função para deletar aluno e o encerramento da página:
+\begin{boxCodigo}
+\begin{verbatim}
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const dados = { 
+                nome: inputNome.value, 
+                idade: parseInt(inputIdade.value), 
+                media: 8.5 
+            };
+            
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+                .then(res => res.json())
+                .then(aluno => {
+                    desenharAlunoNaTela(aluno);
+                    formulario.reset();
+                });
+        });
+
+        function deletarAluno(id) {
+            if (!confirm('Deseja realmente deletar?')) return;
+            fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+                .then(res => {
+                    if (res.ok) {
+                        const el = document.getElementById(`aluno-${id}`);
+                        if (el) el.remove();
+                    }
+                });
+        }
+        window.addEventListener('DOMContentLoaded', carregarAlunos);
+    </script>
+</body>
+</html>
+\end{verbatim}
+\end{boxCodigo}
+
+2. Crie o arquivo \texttt{alunos/static/style.css} com regras CSS premium equivalentes para renderização da página.
+\end{boxAtividade}
+
+\newpage
+
+\begin{boxAtividade}[Parte 7 – Habilitando o Painel Django Admin]
+\textbf{Por que fazemos isso?} Um dos diferenciais do Django é fornecer uma interface administrativa robusta pré-construída para que desenvolvedores gerenciem dados em tabelas do banco de dados graficamente, eliminando a necessidade de construir painéis de controle administrativos do zero.
+
+O Django admin permite gerenciar os registros do banco de dados graficamente.
+
+1. Registre o modelo \texttt{Aluno} no arquivo \texttt{alunos/admin.py}:
+\begin{boxCodigo}
+\begin{verbatim}
+from django.contrib import admin
+from .models import Aluno
+
+admin.site.register(Aluno)
+\end{verbatim}
+\end{boxCodigo}
+
+2. No terminal, gere o usuário administrativo global (\textbf{superuser}):
+\begin{boxCodigo}
+\begin{verbatim}
+python manage.py createsuperuser
+\end{verbatim}
+\end{boxCodigo}
+Insira o nome de usuário (ex: \texttt{admin}), um e-mail de contato e defina uma senha.
+\end{boxAtividade}
+
+---
+
+\section{Testando a Aplicação e Validando Persistência}
+
+Vamos inicializar o servidor de desenvolvimento e testar os recursos implementados:
+
+\begin{enumerate}
+    \item Execute o servidor Django:
+    \begin{boxCodigo}
+    \begin{verbatim}
+    python manage.py runserver
+    \end{verbatim}
+    \end{boxCodigo}
+    \item Acesse \texttt{http://127.0.0.1:8000/} no seu navegador e cadastre alguns alunos.
+    \item Abra as Ferramentas do Desenvolvedor (\textbf{F12}) no navegador e selecione a aba \textbf{Rede (Network)} sob o filtro \textbf{Fetch/XHR} para observar as requisições assíncronas assinaladas em segundo plano ao inserir ou remover registros.
+    \item \textbf{Verificação de Persistência no SQLite:} Desligue o servidor no terminal (\texttt{Ctrl + C}) e inicie-o novamente. Atualize a página do navegador. Perceba que, ao contrário do Flask CRUD em memória RAM do Roteiro 07, os dados permanecem salvos pois estão armazenados em definitivo no banco local \texttt{db.sqlite3}.
+    \item Acesse \texttt{http://127.0.0.1:8000/admin} para logar com o superusuário cadastrado e gerenciar seus modelos de alunos diretamente pela interface administrativa oficial do Django.
+\end{enumerate}
+
+\end{document}

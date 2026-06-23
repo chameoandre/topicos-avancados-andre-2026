@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Alunos (Django)</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <h1>Controle de Alunos</h1>
+    <form id="formulario-cadastro">
+        <input type="text" id="nome" placeholder="Nome do aluno" required>
+        <input type="number" id="idade" placeholder="Idade do aluno" required>
+        <button type="submit">Cadastrar via API</button>
+    </form>
+    <hr>
+    <h2>Alunos Cadastrados</h2>
+    <ul id="lista-alunos"></ul>
+    <script>
+        const API_URL = '/api/alunos';
+        const listaAlunos = document.getElementById('lista-alunos');
+        const formulario = document.getElementById('formulario-cadastro');
+        const inputNome = document.getElementById('nome');
+        const inputIdade = document.getElementById('idade');
+        function carregarAlunos() {
+            fetch(API_URL)
+                .then(res => res.json())
+                .then(alunos => {
+                    listaAlunos.innerHTML = '';
+                    alunos.forEach(aluno => desenharAlunoNaTela(aluno));
+                });
+        }
+        function desenharAlunoNaTela(aluno) {
+            const li = document.createElement('li');
+            li.id = `aluno-${aluno.id}`;
+            li.innerHTML = `
+            <span><strong>${aluno.nome}</strong> (${aluno.idade} anos)
+            - Média: ${aluno.media}
+            [${aluno.aprovado ? 'Aprovado' : 'Reprovado'}]</span>
+            <button class="btn-deletar"
+            onclick="deletarAluno(${aluno.id})">Deletar</button>
+            `;
+            listaAlunos.appendChild(li);
+        }
+
+        formulario.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const dados = {
+                nome: inputNome.value,
+                idade: parseInt(inputIdade.value),
+                media: 8.5
+            };
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            })
+                .then(res => res.json())
+                .then(aluno => {
+                    desenharAlunoNaTela(aluno);
+                    formulario.reset();
+                });
+        });
+        function deletarAluno(id) {
+            if (!confirm('Deseja realmente deletar?')) return;
+            fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+                .then(res => {
+                    if (res.ok) {
+                        const el = document.getElementById(`aluno-${id}`);
+                        if (el) el.remove();
+                    }
+                });
+        }
+        window.addEventListener('DOMContentLoaded', carregarAlunos);
+    </script>
+</body>
+
+</html>
