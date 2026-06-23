@@ -743,6 +743,11 @@ Vamos inicializar o servidor de desenvolvimento e testar os recursos implementad
     \end{verbatim}
     \end{boxCodigo}
     \item Acesse \texttt{http://127.0.0.1:8000/} no seu navegador e cadastre alguns alunos.
+    
+    \begin{center}
+        \includegraphics[width=0.75\textwidth]{img/resultado-implementacao.png}
+    \end{center}
+    
     \item Abra as Ferramentas do Desenvolvedor (\textbf{F12}) no navegador e selecione a aba \textbf{Rede (Network)} sob o filtro \textbf{Fetch/XHR} para observar as requisições assíncronas assinaladas em segundo plano ao inserir ou remover registros.
     \item \textbf{Verificação de Persistência no SQLite:} Desligue o servidor no terminal (\texttt{Ctrl + C}) e inicie-o novamente. Atualize a página do navegador. Perceba que, ao contrário do Flask CRUD em memória RAM do Roteiro 07, os dados permanecem salvos pois estão armazenados em definitivo no banco local \texttt{db.sqlite3}.
     \item Acesse \texttt{http://127.0.0.1:8000/admin} para logar com o superusuário cadastrado e gerenciar seus modelos de alunos diretamente pela interface administrativa oficial do Django.

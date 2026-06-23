@@ -594,6 +594,9 @@ Vamos iniciar o servidor de desenvolvimento do Django e validar o funcionamento 
     ```
 2.  Abra seu navegador e acesse a tela do sistema: `http://127.0.0.1:8000/`.
 3.  Cadastre alguns alunos na interface web. Observe que, assim como no Roteiro 07, o cadastro ocorre dinamicamente de forma SPA (sem piscar a tela) via requisições assíncronas do Fetch API.
+
+    ![Interface de Controle de Alunos com Django](img/resultado-implementacao.png)
+
 4.  **Teste de Persistência:**
     *   No terminal, aperte `Ctrl + C` para desligar o servidor Django.
     *   Inicie-o novamente usando `python manage.py runserver`.
